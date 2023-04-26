@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `Categorias` (
 CREATE TABLE IF NOT EXISTS `Restaurantes` (
   `id_rest` INT (11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `apertura` INT (5) NOT NULL AUTO_INCREMENT,
+  `apertura` INT (5) NOT NULL,
   `direccion` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `imagen` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `id_editor`  INT (11) NOT NULL,

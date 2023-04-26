@@ -1,21 +1,15 @@
 <?php
 
-namespace es\ucm\fdi\aw;
-
-use Exception;
-use es\ucm\fdi\aw\usuarios\Usuario;
-
 /**
  * Clase que mantiene el estado global de la aplicación.
  */
 class Aplicacion
 {
-    const ATRIBUTOS_PETICION = 'attsPeticion';
 
     private static $instancia;
 
     /**
-     * Devuele una instancia de {@see Aplicacion}.
+     * Devuelve una instancia de {@see Aplicacion}.
      *
      * @return Applicacion Obtiene la única instancia de la <code>Aplicacion</code>
      */
@@ -118,37 +112,10 @@ class Aplicacion
      */
     public function init($bdDatosConexion, $rutaApp = '/', $dirInstalacion = __DIR__)
     {
-        if (!$this->inicializada) {
-            $this->bdDatosConexion = $bdDatosConexion;
-
-            $this->rutaRaizApp = $rutaApp;
-
-            // Eliminamos la última /
-            $tamRutaRaizApp = mb_strlen($this->rutaRaizApp);
-            if ($tamRutaRaizApp > 0 && mb_substr($this->rutaRaizApp, $tamRutaRaizApp-1, 1) === '/') {
-                $this->rutaRaizApp = mb_substr($this->rutaRaizApp, 0, $tamRutaRaizApp - 1);
-            }
-
-            // El último separador de la ruta (ya sea el separador específico del sistema o /)
-            $this->dirInstalacion = $dirInstalacion;
-            $tamDirInstalacion = mb_strlen($this->dirInstalacion);
-            if ($tamDirInstalacion > 0) {
-                $ultimoChar = mb_substr($this->dirInstalacion, $tamDirInstalacion-1, 1);
-                if ($ultimoChar === DIRECTORY_SEPARATOR || $ultimoChar === '/') {
-                    $this->dirInstalacion = mb_substr($this->dirInstalacion, 0, $tamDirInstalacion - 1);
-                }
-            }
-
-            $this->conn = null;
-            session_start();
-
-            /* Se inicializa los atributos asociados a la petición en base a la sesión y se eliminan para que
-        * no estén disponibles después de la gestión de esta petición.
-        */
-            $this->atributosPeticion = $_SESSION[self::ATRIBUTOS_PETICION] ?? [];
-            unset($_SESSION[self::ATRIBUTOS_PETICION]);
-
-            $this->inicializada = true;
+        if ( ! $this->inicializada ) {
+    	    $this->bdDatosConexion = $bdDatosConexion;
+    		$this->inicializada = true;
+    		session_start();
         }
     }
 
@@ -168,7 +135,7 @@ class Aplicacion
      */
     private function compruebaInstanciaInicializada()
     {
-        if (!$this->inicializada && $this->generandoError) {
+        if (!$this->inicializada) {
             $this->paginaError(502, 'Error', 'Oops', 'La aplicación no está configurada. Tienes que modificar el fichero config.php');
         }
     }
@@ -178,7 +145,7 @@ class Aplicacion
      *
      * @return \mysqli Conexión a MySQL.
      */
-    public function getConexionBd()
+    function getConexionBd()
     {
         $this->compruebaInstanciaInicializada();
         if (!$this->conn) {
@@ -200,6 +167,9 @@ class Aplicacion
         }
         return $this->conn;
     }
+
+    
+
 
     public function resuelve($path = '')
     {
@@ -315,41 +285,6 @@ class Aplicacion
         }
     }
 
-    /**
-     * Añade un atributo <code>$valor</code> para que esté disponible en la siguiente petición bajo la clave <code>$clave</code>.
-     *
-     * @param string $clave Clave bajo la que almacenar el atributo.
-     * @param any    $valor Valor a almacenar como atributo de la petición.
-     *
-     */
-    public function putAtributoPeticion($clave, $valor)
-    {
-        $atts = null;
-        if (isset($_SESSION[self::ATRIBUTOS_PETICION])) {
-            $atts = &$_SESSION[self::ATRIBUTOS_PETICION];
-        } else {
-            $atts = array();
-            $_SESSION[self::ATRIBUTOS_PETICION] = &$atts;
-        }
-        $atts[$clave] = $valor;
-    }
-
-    /**
-     * Devuelve un atributo establecido en la petición actual o en la petición justamente anterior.
-     *
-     *
-     * @param string $clave Clave sobre la que buscar el atributo.
-     *
-     * @return any Attributo asociado a la sesión bajo la clave <code>$clave</code> o <code>null</code> si no existe.
-     */
-    public function getAtributoPeticion($clave)
-    {
-        $result = $this->atributosPeticion[$clave] ?? null;
-        if (is_null($result) && isset($_SESSION[self::ATRIBUTOS_PETICION])) {
-            $result = $_SESSION[self::ATRIBUTOS_PETICION][$clave] ?? null;
-        }
-        return $result;
-    }
 
     public static function redirige($url)
     {
@@ -383,4 +318,5 @@ class Aplicacion
         }
         return $query;
     }
+
 }

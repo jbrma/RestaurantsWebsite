@@ -1,16 +1,21 @@
 <?php
 
-require_once __DIR__.'/includes/config.php';
+$tituloPagina = 'Iniciar Sesión';
 
-$formLogin = new \es\ucm\fdi\aw\usuarios\FormularioLogin();
-$formLogin = $formLogin->gestiona();
+$contenidoPrincipal=<<<EOS
 
+    <form action="procesarLogin.php" method="POST" id="login">
+    <fieldset>
+        <h3> Inicia Sesión o Regístrate </h3>
+        <br/><input type="text" name="email" placeholder="Correo electrónico" required/>
+        <br/><input type="password" name="password" placeholder="Contraseña" required/>
+        <br/><br/><button type="submit" id="login-button">INICIAR SESIÓN</button>
+    </fieldset>
+    <h5>↓ ¿No tienes cuenta? ↓</h5>
+    <a href="registro.php"><button type="button" id="register-button">REGISTRARSE</button></a>
 
-$tituloPagina = 'Login';
-$contenidoPrincipal=<<<EOF
-  	<h1>Acceso al sistema</h1>
-    $formLogin
-EOF;
+EOS;
 
-$params = ['tituloPagina' => $tituloPagina, 'contenidoPrincipal' => $contenidoPrincipal, 'cabecera' => 'Login'];
-$app->generaVista('/plantillas/plantilla.php', $params);
+require ('./includes/vistas/plantillas/plantilla.php');
+?>
+

@@ -40,3 +40,11 @@ CREATE TABLE IF NOT EXISTS `Restaurantes` (
   PRIMARY KEY (`id_rest`),
   FOREIGN KEY (`id_editor`) REFERENCES `Editores`(`id_editor`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `Rest_Cat` (
+  `id_rest` INT (11) NOT NULL,
+  `id_categoria` INT (11) NOT NULL,
+  PRIMARY KEY (`id_rest`, `id_categoria`),
+  FOREIGN KEY (`id_rest`) REFERENCES `Restaurantes`(`id_rest`),
+  FOREIGN KEY (`id_categoria`) REFERENCES `Categorias`(`id_categoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

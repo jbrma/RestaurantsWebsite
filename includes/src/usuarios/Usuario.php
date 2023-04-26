@@ -1,13 +1,7 @@
 <?php
-namespace es\ucm\fdi\aw\usuarios;
-
-use es\ucm\fdi\aw\Aplicacion;
-use es\ucm\fdi\aw\MagicProperties;
 
 class Usuario
 {
-    use MagicProperties;
-
     public const ADMIN_ROLE = 1;
 
     public const USER_ROLE = 2;
